@@ -1,0 +1,19 @@
+// Config file is in HJSON format.
+// Every entry defines sleep time and memory percentage above which it activates
+// Sleep time between two entries is interpolated logarithmicly (by default) or linearly.
+// When no entry is active KSM is disabled.
+
+[
+    {
+        ksm_sleep_millisecs: 100,
+        trigger_memory_above: 30
+    }
+
+    // When memory is above 30%, but below 80%
+    // Time is linearly interpolated between 100 and 1 milliseconds
+
+    {
+        ksm_sleep_millisecs: 1
+        trigger_memory_above: 80
+    }
+]

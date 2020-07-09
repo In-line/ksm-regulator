@@ -1,0 +1,17 @@
+[Unit]
+Description=KSM Regulator service
+After=local-fs.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ksm-regulator
+Nice=19
+OOMScoreAdjust=-999
+Restart=always
+CPUAccounting=true
+ProtectSystem=true
+ProtectHome=true
+PrivateTmp=yes
+
+[Install]
+WantedBy=local-fs.target

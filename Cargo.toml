@@ -1,0 +1,29 @@
+[package]
+name = "ksm-regulator"
+description = "KSM Regulator - is a daemon to automatically manage KSM"
+readme = "README.md"
+version = "0.1.0"
+authors = ["Alik Aslanyan <cplusplus@gmail.com>"]
+edition = "2018"
+license = "GPL-3.0"
+
+[dependencies]
+async-std = { version = "1.6.2", features = ["attributes"] }
+futures = {version = "0.3.5", default-features = false}
+async-ctrlc = "^1"
+serde-hjson = "0.9.1"
+serde = "0.8.2"
+serde_derive = "0.8.2"
+anyhow = "^1"
+itertools = "0.9.0"
+ordered-float = "^1"
+ordslice = "0.3.0"
+sysinfo = "0.14.10"
+interpolation = "0.2.0"
+log = "0.4.8"
+stderrlog = "0.4.3"
+structopt = "0.3.15"
+
+[profile.release]
+lto = true
+codegen-units = 1
