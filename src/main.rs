@@ -116,7 +116,7 @@ async fn process(opt: &Opt) -> Result {
     debug!("{:#?}", sleep_map);
 
     loop {
-        let mem_info = task::spawn_blocking(|| sys_info::mem_info())
+        let mem_info = task::spawn_blocking(sys_info::mem_info)
             .await
             .context("Can't get memory info")?;
 
