@@ -1,21 +1,27 @@
 # Maintainer: Alik Aslanyan <cplusplus@gmail.com>
 
 pkgname=ksm-regulator
-pkgver=0.1.0.r0.g758ceb0
+pkgver=0.1.0.1850d66
 pkgrel=1
 pkgdesc="KSM Regulator - is a daemon to automatically manage KSM"
 license=("GPL3")
-depends=(systemd)
-makedepends=(rust)
+depends=('systemd')
+makedepends=('rust' 'cargo')
 arch=(x86_64)
-backup=( 'etc/ksm-regulator.hjson' )
+backup=('etc/ksm-regulator.hjson' )
 
-pkgver() {
-    (git describe --long --tags || echo "$pkgver") | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+pkgver() { 
+  cd ../
+  local_version=$(grep '^version =' Cargo.toml|head -n1|cut -d\" -f2)
+  local_commit=$(git log --pretty=format:'%h' -n 1)
+  echo "$local_version.$local_commit"
 }
 
+
 build() {
-    cargo build --release --locked
+    # Uncomment to build with Xargo (will allow LTO with stdlib, 30% less executable size)
+    # xargo build --release --locked --target x86_64-unknown-linux-gnu
+    cargo build --release --locked --target x86_64-unknown-linux-gnu 
 }
 
 package() {
@@ -32,5 +38,5 @@ package() {
     mkdir -p $systemddir
     cp ./package/*.service $systemddir/ksm-regulator.service
 
-    install -Dm 755 target/release/${pkgname} -t "$usrdir/bin"
+    install -Dm 755 target/x86_64-unknown-linux-gnu/release/${pkgname} -t "$usrdir/bin"
 }
