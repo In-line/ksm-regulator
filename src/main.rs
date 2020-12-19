@@ -1,6 +1,6 @@
 /*
  * KSM Regulator
- * Copyright (c) 2019 Alik Aslanyan <cplusplus256@gmail.com>
+ * Copyright (c) 2020 Alik Aslanyan <cplusplus256@gmail.com>
  *
  *
  *    This file is part of KSM Regulator.
