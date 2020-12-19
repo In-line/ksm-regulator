@@ -41,7 +41,6 @@ use serde_derive::Deserialize;
 use std::cmp::{min, Ord};
 use std::time::Duration;
 use structopt::StructOpt;
-use sysinfo::{System, SystemExt};
 
 type Result = anyhow::Result<()>;
 
@@ -117,10 +116,12 @@ async fn process(opt: &Opt) -> Result {
     debug!("{:#?}", sleep_map);
 
     loop {
-        let system = System::new();
+        let mem_info = task::spawn_blocking(|| sys_info::mem_info())
+            .await
+            .context("Can't get memory info")?;
 
-        let total_memory = system.get_total_memory() as f64 / 1024.0;
-        let used_memory = system.get_used_memory() as f64 / 1024.0;
+        let total_memory = mem_info.total as f64 / 1024.0;
+        let used_memory = (mem_info.total - mem_info.avail) as f64 / 1024.0;
 
         let usage_percentage = used_memory / total_memory * 100.0;
 
@@ -165,7 +166,7 @@ async fn process(opt: &Opt) -> Result {
         } else {
             set_ksm_run(opt, false).await?;
         };
-        task::sleep(Duration::from_secs(1)).await;
+        task::sleep(Duration::from_secs(5)).await;
     }
 }
 
@@ -210,7 +211,7 @@ struct Opt {
 }
 
 #[async_std::main]
-async fn main() -> anyhow::Result<()> {
+async fn main() -> Result {
     let opt = Opt::from_args();
 
     stderrlog::new()
